@@ -104,11 +104,33 @@ func (mn *manager) LeaveRoom(ctx context.Context, client_id, room_name string) e
 		log.Print("room not found", err)
 		return err
 	}
-
 	// remove client from the room list
 	delete(room, client_id)
 	// remove room from client list
 	delete(client.Rooms, room_name)
+
+	return nil
+}
+
+func (mn *manager) BroadCastMsgToRoom(ctx context.Context, room_name string, message []byte) error {
+
+	room, exists := mn.rooms[room_name]
+
+	if !exists {
+		err := errors.RoomErr.New("No Room Found ").WithProperty(errors.ErrorCode, 404)
+		log.Print("room not found", err)
+		return err
+	}
+
+	for _, client := range room {
+
+		if err := client.Con.WriteMessage(websocket.TextMessage, message); err != nil {
+			err = errors.ClientErr.Wrap(err, "failed to send message to client").WithProperty(errors.ErrorCode, 500)
+			log.Println("failed to send message client", client)
+			return err
+		}
+
+	}
 
 	return nil
 }

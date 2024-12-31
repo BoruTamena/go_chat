@@ -7,6 +7,7 @@ var (
 )
 
 var (
+	ClientErr = errorx.NewType(WsError, "Client Error")
 	CNotFound = errorx.NewType(WsError, "Client Not Found ")
 	RoomErr   = errorx.NewType(WsError, "Room Error")
 )
