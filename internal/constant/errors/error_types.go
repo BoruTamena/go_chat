@@ -8,8 +8,9 @@ var (
 
 var (
 	CNotFound = errorx.NewType(WsError, "Client Not Found ")
+	RoomErr   = errorx.NewType(WsError, "Room Error")
 )
 
 var (
-	Key = errorx.RegisterProperty("property_key")
+	ErrorCode = errorx.RegisterProperty("ERRCODE")
 )

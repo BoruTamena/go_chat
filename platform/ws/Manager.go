@@ -12,9 +12,9 @@ import (
 
 type manager struct {
 
-	// map group names to the clients in that group
-	// map of groups to client map
-	groups map[string]map[string]*Client
+	// maps room names to the clients in that room
+	// map of rooms to client map
+	rooms map[string]map[string]*Client
 
 	// track all the connected clients
 	clients map[string]*Client
@@ -25,7 +25,7 @@ type manager struct {
 func NewClientManger() platform.Manager {
 
 	return &manager{
-		groups:  make(map[string]map[string]*Client),
+		rooms:   make(map[string]map[string]*Client),
 		clients: make(map[string]*Client),
 		mu:      sync.Mutex{},
 	}
@@ -56,12 +56,21 @@ func (mn *manager) RemoveClient(ctx context.Context, client_id string) error {
 	client, exists := mn.clients[client_id]
 
 	if !exists {
-		err := errors.CNotFound.New("").WithProperty(errors.Key, 404)
+		err := errors.CNotFound.New("").WithProperty(errors.ErrorCode, 404)
 		log.Print("No client with this id: ", err)
 		return err
 	}
 
 	client.Con.Close()
+
+	for room_name := range client.Rooms {
+
+		delete(mn.rooms[room_name], client_id)
+		// delete the whole room if their no client left
+		if len(mn.rooms[room_name]) == 0 {
+			delete(mn.rooms, room_name)
+		}
+	}
 
 	delete(mn.clients, client_id)
 
