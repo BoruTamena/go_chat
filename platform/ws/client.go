@@ -59,7 +59,7 @@ func (mn *manager) JoinRoom(ctx context.Context, client_id, room_name string) er
 
 	if !exists {
 
-		err := errors.CNotFound.NewWithNoMessage().WithProperty(errors.ErrorCode, 404)
+		err := errors.CNotFound.New("client not found").WithProperty(errors.ErrorCode, 404)
 		log.Println("client not found with id provided :", err)
 		return err
 
@@ -79,4 +79,36 @@ func (mn *manager) JoinRoom(ctx context.Context, client_id, room_name string) er
 
 	return nil
 
+}
+
+func (mn *manager) LeaveRoom(ctx context.Context, client_id, room_name string) error {
+
+	mn.mu.Lock()
+
+	defer mn.mu.Unlock()
+
+	client, exists := mn.clients[client_id]
+
+	if !exists {
+
+		err := errors.CNotFound.New("client not found").WithProperty(errors.ErrorCode, 404)
+		log.Println("client not found with id provided :", err)
+		return err
+
+	}
+
+	room, ok := mn.rooms[room_name]
+
+	if !ok {
+		err := errors.RoomErr.New("No Room Found ").WithProperty(errors.ErrorCode, 404)
+		log.Print("room not found", err)
+		return err
+	}
+
+	// remove client from the room list
+	delete(room, client_id)
+	// remove room from client list
+	delete(client.Rooms, room_name)
+
+	return nil
 }

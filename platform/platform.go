@@ -21,5 +21,7 @@ type Manager interface {
 	// web socket interface
 	AddClient(ctx context.Context, client_id string, conn *websocket.Conn)
 	RemoveClient(ctx context.Context, client_id string) error
+	CreateRoom(ctx context.Context, client_id, room_name string) error
 	JoinRoom(ctx context.Context, client_id, room_name string) error
+	LeaveRoom(ctx context.Context, client_id, room_name string) error
 }
