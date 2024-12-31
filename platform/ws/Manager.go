@@ -2,8 +2,10 @@ package ws
 
 import (
 	"context"
+	"log"
 	"sync"
 
+	"github.com/BoruTamena/go_chat/internal/constant/errors"
 	"github.com/BoruTamena/go_chat/platform"
 	"github.com/gorilla/websocket"
 )
@@ -44,5 +46,27 @@ func (mn *manager) AddClient(ctx context.Context, client_id string, conn *websoc
 	mn.clients[client_id] = client
 
 	mn.mu.Unlock()
+
+}
+
+func (mn *manager) RemoveClient(ctx context.Context, client_id string) error {
+
+	mn.mu.Lock()
+
+	client, exists := mn.clients[client_id]
+
+	if !exists {
+		err := errors.CNotFound.New("").WithProperty(errors.Key, 404)
+		log.Print("No client with this id: ", err)
+		return err
+	}
+
+	client.Con.Close()
+
+	delete(mn.clients, client_id)
+
+	mn.mu.Unlock()
+
+	return nil
 
 }
