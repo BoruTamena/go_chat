@@ -25,4 +25,5 @@ type Manager interface {
 	JoinRoom(ctx context.Context, client_id, room_name string) error
 	LeaveRoom(ctx context.Context, client_id, room_name string) error
 	BroadCastMsgToRoom(ctx context.Context, room_name string, message []byte) error
+	SendMessageToClient(ctx context.Context, client_id string, message []byte) error
 }

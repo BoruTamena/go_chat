@@ -134,3 +134,23 @@ func (mn *manager) BroadCastMsgToRoom(ctx context.Context, room_name string, mes
 
 	return nil
 }
+
+func (mn *manager) SendMessageToClient(ctx context.Context, client_id string, message []byte) error {
+
+	client, ok := mn.clients[client_id]
+	if !ok {
+		err := errors.CNotFound.NewWithNoMessage().WithProperty(errors.ErrorCode, 404)
+		log.Println("client not found with id provided :", err)
+		return err
+	}
+
+	if err := client.Con.WriteMessage(websocket.TextMessage, message); err != nil {
+
+		err = errors.ClientErr.Wrap(err, "could not write to client").WithProperty(errors.ErrorCode, 500)
+		log.Println("could not write to this client", err)
+		return err
+
+	}
+
+	return nil
+}
