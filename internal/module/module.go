@@ -8,4 +8,6 @@ import (
 
 type Message interface {
 	MessageFriend(ctx context.Context, message models.Message) error
+
+	MessageGroup(ctx context.Context, message models.Message) error
 }
