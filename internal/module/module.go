@@ -1,3 +1,13 @@
 package module
 
-// define module interface here
+import (
+	"context"
+
+	"github.com/BoruTamena/go_chat/internal/constant/models"
+)
+
+type Message interface {
+	MessageFriend(ctx context.Context, message models.Message) error
+
+	MessageGroup(ctx context.Context, message models.Message) error
+}
