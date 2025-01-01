@@ -17,7 +17,7 @@ type SSO interface {
 	// SSO interface
 }
 
-type Manager interface {
+type WsManager interface {
 	// web socket interface
 	AddClient(ctx context.Context, client_id string, conn *websocket.Conn)
 	RemoveClient(ctx context.Context, client_id string) error

@@ -22,7 +22,7 @@ type manager struct {
 	mu sync.Mutex
 }
 
-func NewClientManger() platform.Manager {
+func NewClientManger() platform.WsManager {
 
 	return &manager{
 		rooms:   make(map[string]map[string]*Client),
