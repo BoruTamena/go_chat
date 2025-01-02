@@ -7,8 +7,11 @@ import (
 
 	"github.com/BoruTamena/go_chat/internal/constant/errors"
 	"github.com/BoruTamena/go_chat/platform"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
+
+var upgrader = websocket.Upgrader{}
 
 type manager struct {
 
@@ -78,4 +81,16 @@ func (mn *manager) RemoveClient(ctx context.Context, client_id string) error {
 
 	return nil
 
+}
+
+func (mn *manager) ServeWs(c *gin.Context) *websocket.Conn {
+
+	webcon, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+
+	if err != nil {
+		err = errors.WsConErr.New("can't create connection")
+		log.Println("web socket connection error", err)
+	}
+
+	return webcon
 }

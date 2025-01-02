@@ -3,6 +3,7 @@ package platform
 import (
 	"context"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
@@ -19,6 +20,7 @@ type SSO interface {
 
 type WsManager interface {
 	// web socket interface
+	ServeWs(c *gin.Context) *websocket.Conn
 	AddClient(ctx context.Context, client_id string, conn *websocket.Conn)
 	RemoveClient(ctx context.Context, client_id string) error
 	CreateRoom(ctx context.Context, client_id, room_name string) error
