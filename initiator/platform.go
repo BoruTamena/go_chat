@@ -1,5 +1,10 @@
 package initiator
 
+import (
+	"github.com/BoruTamena/go_chat/platform"
+	"github.com/BoruTamena/go_chat/platform/ws"
+)
+
 type PlatFormLayer struct {
 
 	/*
@@ -9,6 +14,13 @@ type PlatFormLayer struct {
 	 sso platfrom.SSO
 
 	*/
+
+	WebSocket platform.WsManager
 }
 
-func InitPlatFormLayer(arg any) PlatFormLayer
+func InitPlatFormLayer() PlatFormLayer {
+
+	return PlatFormLayer{
+		WebSocket: ws.NewClientManger(),
+	}
+}

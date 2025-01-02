@@ -20,7 +20,9 @@ type SSO interface {
 
 type WsManager interface {
 	// web socket interface
-	ServeWs(c *gin.Context) *websocket.Conn
+	Run(ctx *gin.Context)
+	ServeWs(c *gin.Context)
+	AddHandler(chat_type string, handler HandlerFunc)
 	AddClient(ctx context.Context, client_id string, conn *websocket.Conn)
 	RemoveClient(ctx context.Context, client_id string) error
 	CreateRoom(ctx context.Context, client_id, room_name string) error

@@ -1,13 +1,24 @@
 package initiator
 
+import (
+	"log"
+
+	"github.com/BoruTamena/go_chat/internal/module"
+	"github.com/BoruTamena/go_chat/internal/module/message"
+)
+
 type Module struct {
 
-	/* all your modules goes here
+	/* all your modules goes here */
 
-
-	user  module.User
-
-	*/
+	MessageModule module.Message
 }
 
-func InitModule(arg any) Module
+func InitModule(lg *log.Logger, plt PlatFormLayer) Module {
+
+	return Module{
+		MessageModule: message.NewChatMessage(lg,
+			plt.WebSocket),
+	}
+
+}

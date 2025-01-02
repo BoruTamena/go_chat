@@ -5,20 +5,9 @@ import (
 	"log"
 
 	"github.com/BoruTamena/go_chat/internal/constant/errors"
+
 	"github.com/gorilla/websocket"
 )
-
-type Client struct {
-	// unique to each client
-	ClientId string `json:"client_id"`
-	// gorilla socket connection
-	Con *websocket.Conn
-	// meta data about client
-	// status : online ,typing,and other
-	MetaData map[string]interface{}
-	// rooms the client has joined
-	Rooms map[string]bool
-}
 
 func (mn *manager) CreateRoom(ctx context.Context, client_id, room_name string) error {
 
