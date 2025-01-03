@@ -16,7 +16,7 @@ import (
 
 func Init() {
 
-	engine := gin.New()
+	engine := gin.Default()
 
 	rg := engine.Group("v1")
 

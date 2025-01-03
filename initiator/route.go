@@ -16,7 +16,7 @@ func InitRouter(
 	platform PlatFormLayer) {
 
 	docs.SwaggerInfo.Schemes = []string{"http"}
-	docs.SwaggerInfo.Host = "localhost"
+	docs.SwaggerInfo.Host = "localhost:7000"
 	docs.SwaggerInfo.BasePath = "/v1"
 	groupRouter.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
