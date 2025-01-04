@@ -1,6 +1,7 @@
 package initiator
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -25,6 +26,8 @@ func Init() {
 
 	//
 	platform := InitPlatFormLayer()
+
+	go platform.WebSocket.Run(context.Background())
 
 	modules := InitModule(logger, platform)
 

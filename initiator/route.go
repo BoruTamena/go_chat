@@ -23,4 +23,6 @@ func InitRouter(
 	// initalizing route
 	message.InitRoute(&groupRouter, platform.WebSocket, handler.MessageHandler)
 
+	message.InitSocketRoute(platform.WebSocket, handler.MessageHandler)
+
 }

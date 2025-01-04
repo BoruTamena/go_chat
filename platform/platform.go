@@ -20,7 +20,7 @@ type SSO interface {
 
 type WsManager interface {
 	// web socket interface
-	Run(ctx *gin.Context)
+	Run(ctx context.Context)
 	ServeWs(c *gin.Context)
 	AddHandler(chat_type string, handler HandlerFunc)
 	AddClient(ctx context.Context, client_id string, conn *websocket.Conn)
