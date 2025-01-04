@@ -32,7 +32,7 @@ func (m *message) TextFriendMessage(ctx *gin.Context, message models.Message, cl
 	}
 }
 
-func (m *message) TextGroupMessage(ctx *gin.Context, message models.Message, client *platform.Client) {
+func (m *message) TextGroupMessage(ctx *gin.Context, message models.Message, _ *platform.Client) {
 
 	err := m.msgModule.MessageGroup(ctx, message)
 	if err != nil {

@@ -38,6 +38,10 @@ func InitSocketRoute(mn platform.WsManager, handler handler.Message) {
 			MsgType: models.PrivateMessage,
 			Handler: handler.TextFriendMessage,
 		},
+		{
+			MsgType: models.GroupMessage,
+			Handler: handler.TextGroupMessage,
+		},
 	}
 
 	routing.RegisterSocketRoute(mn, routes)

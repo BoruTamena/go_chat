@@ -20,7 +20,3 @@ Feature: Private Chat Feature
     Then the user receive the same message from friend
         |user_id | message_received |
         | 123User1 |I'm good, thanks!    |
-
-    # Examples:
-    #   | friend_id | user_id    | message         | message_received | response         |
-    #   | 456User2  | 123User1   | Hello, how are you? | Hello, how are you? | I'm good, thanks! |

@@ -14,4 +14,5 @@ type User interface {
 type Message interface {
 	GetMessage(ctx *gin.Context)
 	TextFriendMessage(ctx *gin.Context, message models.Message, client *platform.Client)
+	TextGroupMessage(ctx *gin.Context, message models.Message, _ *platform.Client)
 }
