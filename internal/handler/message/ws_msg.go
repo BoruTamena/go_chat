@@ -31,3 +31,12 @@ func (m *message) TextFriendMessage(ctx *gin.Context, message models.Message, cl
 		return
 	}
 }
+
+func (m *message) TextGroupMessage(ctx *gin.Context, message models.Message, client *platform.Client) {
+
+	err := m.msgModule.MessageGroup(ctx, message)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+}
