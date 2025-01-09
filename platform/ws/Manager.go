@@ -3,6 +3,7 @@ package ws
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -60,12 +61,17 @@ func NewClientManger() platform.WsManager {
 
 func (mn *manager) Run(ctx context.Context) {
 
-	select {
-	case client := <-mn.register:
-		mn.AddClient(ctx, client.ClientId, client.Con)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case client := <-mn.register:
+			mn.AddClient(ctx, client.ClientId, client.Con)
 
-	case client := <-mn.unregister:
-		mn.RemoveClient(ctx, client.ClientId)
+		case client := <-mn.unregister:
+			mn.RemoveClient(ctx, client.ClientId)
+		}
+
 	}
 
 }
@@ -82,6 +88,9 @@ func (mn *manager) AddClient(ctx context.Context, client_id string, conn *websoc
 	mn.mu.Lock()
 
 	mn.clients[client_id] = client
+
+	fmt.Println(">>>>>>>>>>>>>>>>>current rooms>>>>>>>>>")
+	fmt.Println(mn.rooms)
 
 	mn.mu.Unlock()
 
@@ -187,18 +196,18 @@ func (mn *manager) ServeWs(ctx *gin.Context) {
 			break
 		}
 
-		cl, ok := mn.clients[message.Target]
-		if !ok {
+		// cl, ok := mn.clients[message.Target]
+		// if !ok {
 
-			err := errors.CNotFound.New("no cliend with this client_id").
-				WithProperty(errors.ErrorCode, 400)
+		// 	err := errors.CNotFound.New("no cliend with this client_id").
+		// 		WithProperty(errors.ErrorCode, 400)
 
-			log.Printf(`client_id: %v`, message.Target, err)
-			break
+		// 	log.Printf(`client_id: %v`, message.Target, err)
+		// 	break
 
-		}
+		// }
 
-		handler(ctx, message, cl)
+		handler(ctx, message, nil)
 
 	}
 

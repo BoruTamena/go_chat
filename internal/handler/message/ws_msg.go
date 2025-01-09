@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/BoruTamena/go_chat/internal/constant/models"
@@ -34,6 +35,7 @@ func (m *message) TextFriendMessage(ctx *gin.Context, message models.Message, cl
 
 func (m *message) TextGroupMessage(ctx *gin.Context, message models.Message, _ *platform.Client) {
 
+	fmt.Println("--------------group message handler called--------")
 	err := m.msgModule.MessageGroup(ctx, message)
 	if err != nil {
 		ctx.Error(err)
