@@ -1,0 +1,16 @@
+info:
+  contact:
+    name: Boru Tamene Yadeta
+    url: https://github.com/BoruTamena
+  description: This is a  Swagger API documentation for GoChat Open source Project.
+  title: Go Chat
+  version: 1.0.0
+paths:
+  /seemessage:
+    get:
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - message
+swagger: "2.0"

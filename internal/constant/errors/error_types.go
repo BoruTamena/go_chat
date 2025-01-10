@@ -9,12 +9,16 @@ var (
 )
 
 var (
-	ClientErr    = errorx.NewType(WsError, "Client Error")
-	CNotFound    = errorx.NewType(WsError, "Client Not Found ")
-	RoomErr      = errorx.NewType(WsError, "Room Error")
-	BadInput     = errorx.NewType(InputError, "Bad user input ")
-	MarshalErr   = errorx.NewType(InternalError, "unable to marshal")
-	UnMarshalErr = errorx.NewType(InternalError, "unable to unmarshal")
+	ClientErr = errorx.NewType(WsError, "Socket Client Error:error")
+	CNotFound = errorx.NewType(WsError, "Socket Client Not Found:error ")
+
+	WsConErr       = errorx.NewType(WsError, "Web SocketConnection:error")
+	WsReadErr      = errorx.NewType(WsError, "Web Socket Read:error")
+	WsUnRigsterErr = errorx.NewType(WsError, "Handler Not Regisetred:error")
+	RoomErr        = errorx.NewType(WsError, "Room:error")
+	BadInput       = errorx.NewType(InputError, "Bad user input:error")
+	MarshalErr     = errorx.NewType(InternalError, "unable to marshal:error")
+	UnMarshalErr   = errorx.NewType(InternalError, "unable to unmarshal:error")
 )
 
 var (

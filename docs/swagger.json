@@ -1,0 +1,25 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a  Swagger API documentation for GoChat Open source Project.",
+        "title": "Go Chat",
+        "contact": {
+            "name": "Boru Tamene Yadeta",
+            "url": "https://github.com/BoruTamena"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/seemessage": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "message"
+                ],
+                "responses": {}
+            }
+        }
+    }
+}

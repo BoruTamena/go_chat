@@ -1,5 +1,11 @@
 package routing
 
+import (
+	"github.com/BoruTamena/go_chat/internal/constant/models"
+	"github.com/BoruTamena/go_chat/platform"
+	"github.com/gin-gonic/gin"
+)
+
 type Router struct {
 	/*
 		method string
@@ -9,4 +15,34 @@ type Router struct {
 		Permission
 
 	*/
+	Method  string
+	Path    string
+	Handler gin.HandlerFunc
+}
+
+type SocketRouter struct {
+	MsgType models.MessageType
+	Handler platform.HandlerFunc
+}
+
+// associate handler with endpoints
+func RegisterRoute(rgroup *gin.RouterGroup, routes []Router) {
+
+	for _, route := range routes {
+
+		rgroup.Handle(route.Method, route.Path, route.Handler)
+
+	}
+
+}
+
+// add socket handler to socket handler map
+func RegisterSocketRoute(mn platform.WsManager, routes []SocketRouter) {
+
+	for _, route := range routes {
+
+		mn.AddHandler(string(route.MsgType), route.Handler)
+
+	}
+
 }

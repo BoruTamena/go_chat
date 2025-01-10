@@ -2,23 +2,15 @@ package ws
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"sync"
 
 	"github.com/BoruTamena/go_chat/internal/constant/errors"
+	"github.com/BoruTamena/go_chat/platform"
+
 	"github.com/gorilla/websocket"
 )
-
-type Client struct {
-	// unique to each client
-	ClientId string `json:"client_id"`
-	// gorilla socket connection
-	Con *websocket.Conn
-	// meta data about client
-	// status : online ,typing,and other
-	MetaData map[string]interface{}
-	// rooms the client has joined
-	Rooms map[string]bool
-}
 
 func (mn *manager) CreateRoom(ctx context.Context, client_id, room_name string) error {
 
@@ -34,7 +26,6 @@ func (mn *manager) CreateRoom(ctx context.Context, client_id, room_name string) 
 	}
 
 	// check if room exists with a given name
-
 	if _, exists := mn.rooms[room_name]; exists {
 
 		err := errors.RoomErr.New("room already exists").WithProperty(errors.ErrorCode, 409)
@@ -43,7 +34,13 @@ func (mn *manager) CreateRoom(ctx context.Context, client_id, room_name string) 
 
 	}
 
+	if mn.rooms[room_name] == nil {
+		mn.rooms[room_name] = make(map[string]*platform.Client)
+	}
+
 	mn.rooms[room_name][client_id] = client
+
+	client.Rooms[room_name] = true
 
 	return nil
 
@@ -60,7 +57,7 @@ func (mn *manager) JoinRoom(ctx context.Context, client_id, room_name string) er
 	if !exists {
 
 		err := errors.CNotFound.New("client not found").WithProperty(errors.ErrorCode, 404)
-		log.Println("client not found with id provided :", err)
+		log.Println("client not found with id provided :", client_id)
 		return err
 
 	}
@@ -76,7 +73,7 @@ func (mn *manager) JoinRoom(ctx context.Context, client_id, room_name string) er
 
 	// add client to the room
 	mn.rooms[room_name][client_id] = client
-
+	client.Rooms[room_name] = true
 	return nil
 
 }
@@ -114,24 +111,51 @@ func (mn *manager) LeaveRoom(ctx context.Context, client_id, room_name string) e
 
 func (mn *manager) BroadCastMsgToRoom(ctx context.Context, room_name string, message []byte) error {
 
+	mn.mu.Lock()
 	room, exists := mn.rooms[room_name]
-
+	mn.mu.Unlock()
 	if !exists {
 		err := errors.RoomErr.New("No Room Found ").WithProperty(errors.ErrorCode, 404)
-		log.Print("room not found", err)
+		log.Printf("room not found :: %v", room_name)
 		return err
 	}
 
+	if len(room) == 0 {
+		log.Printf("room %s is empty, no clients to broadcast message", room_name)
+		return nil
+	}
+
+	fmt.Println("-----------------Groups-----------")
+
+	fmt.Println(room)
+
+	var wg sync.WaitGroup
 	for _, client := range room {
 
-		if err := client.Con.WriteMessage(websocket.TextMessage, message); err != nil {
-			err = errors.ClientErr.Wrap(err, "failed to send message to client").WithProperty(errors.ErrorCode, 500)
-			log.Println("failed to send message client", client)
-			return err
-		}
+		wg.Add(1)
+
+		go func(client *platform.Client) {
+
+			defer wg.Done()
+
+			select {
+			case <-ctx.Done():
+				log.Println("message broadcasting cancelled")
+				return
+
+			default:
+				if err := client.Con.WriteMessage(websocket.TextMessage, message); err != nil {
+					err = errors.ClientErr.Wrap(err, "failed to send message to client").WithProperty(errors.ErrorCode, 500)
+					log.Println("failed to send message client", client)
+				}
+
+			}
+
+		}(client)
 
 	}
 
+	wg.Wait()
 	return nil
 }
 
