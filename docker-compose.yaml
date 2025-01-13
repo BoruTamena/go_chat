@@ -1,4 +1,4 @@
-version: '0.1'
+
 services:
   app:
     container_name: app_container 
@@ -7,18 +7,22 @@ services:
       - "8000:8000"
     networks:
       - chat_network
-    depends_on:
-      - mongo_db
+    # depends_on:
+    #   - mongo_db
   
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]  # Adjust the health endpoint as per your API
+    #   interval: 30s
+    #   retries: 3
   mongo_db:
-    image: mongo
+    image: mongo:latest
     container_name: db_container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
 
     ports:
-      - "40000:27017"
+      - "27017:27017"
     volumes:
       - mydata:/data/db
 

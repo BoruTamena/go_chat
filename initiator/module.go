@@ -5,6 +5,7 @@ import (
 
 	"github.com/BoruTamena/go_chat/internal/module"
 	"github.com/BoruTamena/go_chat/internal/module/message"
+	"github.com/BoruTamena/go_chat/internal/storage"
 )
 
 type Module struct {
@@ -14,10 +15,10 @@ type Module struct {
 	MessageModule module.Message
 }
 
-func InitModule(lg *log.Logger, plt PlatFormLayer) Module {
+func InitModule(messageStorage storage.Chat, lg *log.Logger, plt PlatFormLayer) Module {
 
 	return Module{
-		MessageModule: message.NewChatMessage(lg,
+		MessageModule: message.NewChatMessage(lg, messageStorage,
 			plt.WebSocket),
 	}
 

@@ -6,6 +6,7 @@ var (
 	InternalError = errorx.NewNamespace("Internal Server:error")
 	InputError    = errorx.NewNamespace("InputValiation:error")
 	WsError       = errorx.NewNamespace("WebSocket:error")
+	DbError       = errorx.NewNamespace("DataBase:error")
 )
 
 var (
@@ -19,6 +20,9 @@ var (
 	BadInput       = errorx.NewType(InputError, "Bad user input:error")
 	MarshalErr     = errorx.NewType(InternalError, "unable to marshal:error")
 	UnMarshalErr   = errorx.NewType(InternalError, "unable to unmarshal:error")
+
+	WriteErr  = errorx.NewType(DbError, "db write :: error ")
+	NullObjId = errorx.NewType(DbError, "Null Object Id Returned :: error")
 )
 
 var (
