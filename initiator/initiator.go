@@ -46,7 +46,7 @@ func Init() {
 
 	persistence := InitPersistence(p_db, *config)
 
-	modules := InitModule(persistence.pchat, logger, platform)
+	modules := InitModule(persistence.Pchat, logger, platform)
 
 	// init handler
 	handler := IntHandler(logger, modules)

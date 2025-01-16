@@ -9,11 +9,11 @@ import (
 
 type Persistence struct {
 	// privatechat
-	pchat storage.Chat
+	Pchat storage.Chat
 }
 
 func InitPersistence(db persistencedb.MgPersistence, cfg dto.Config) Persistence {
 	return Persistence{
-		pchat: chat.InitChat(db, cfg),
+		Pchat: chat.InitChat(db, cfg),
 	}
 }

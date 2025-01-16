@@ -53,6 +53,10 @@ func (m *message) MessageFriend(ctx context.Context, message models.Message) err
 
 	}
 
+	// TODO Check if client is online
+	// If client is not online skip send message to client and store data
+	// directly to database.
+
 	if err := m.Ws.SendMessageToClient(ctx, message.Target, msg); err != nil {
 		return err
 	}

@@ -1,4 +1,60 @@
 
+# services:
+#   app:
+#     container_name: app_container 
+#     build: .
+#     ports:
+#       - "8000:8000"
+#     networks:
+#       - chat_network
+#     # depends_on:
+#     #   - mongo_db
+
+#     # healthcheck:
+#     #   test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]  # Adjust the health endpoint as per your API
+#     #   interval: 30s
+#     #   retries: 3
+#     volumes:
+#       -./docs:/docs
+#   swagger-ui:
+#     image: swaggerapi/swagger-ui
+#     container_name: swagger_ui_container
+#     ports:
+#         - "80:8080"
+#     volumes:
+#         - ./docs:/usr/share/nginx/html/docs
+#     environment:
+#          API_URL: /docs/swagger.yaml 
+#     depends_on:
+#           - app 
+          
+#   mongo_db:
+#     image: mongo:latest
+#     container_name: db_container
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: admin
+#       MONGO_INITDB_ROOT_PASSWORD: password
+
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mydata:/data/db
+
+#     networks:
+#       - chat_network
+
+# networks:
+#   chat_network:
+#     driver: bridge
+
+# volumes:
+#   mydata: 
+#     driver: local
+
+  
+  
+# version: "3.8"
+
 services:
   app:
     container_name: app_container 
@@ -7,25 +63,33 @@ services:
       - "8000:8000"
     networks:
       - chat_network
-    # depends_on:
-    #   - mongo_db
-  
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8000/v1/health"]  # Adjust the health endpoint as per your API
-    #   interval: 30s
-    #   retries: 3
+    volumes:
+      - ./docs:/app/docs  # Fix the path
+    depends_on:
+      - mongo_db
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger_ui_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docs:/usr/share/nginx/html/docs  # Fix the path
+    environment:
+      API_URL: /docs/swagger.yaml  # Ensure correct API URL
+    depends_on:
+      - app
+
   mongo_db:
     image: mongo:latest
     container_name: db_container
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-
     ports:
       - "27017:27017"
     volumes:
       - mydata:/data/db
-
     networks:
       - chat_network
 
@@ -36,6 +100,3 @@ networks:
 volumes:
   mydata: 
     driver: local
-
-  
-  

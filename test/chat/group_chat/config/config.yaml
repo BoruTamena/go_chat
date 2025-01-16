@@ -1,0 +1,7 @@
+database:
+  url: mongodb://localhost:27017
+  dbname: chat
+
+server:
+  host: localhost
+  port: 8000

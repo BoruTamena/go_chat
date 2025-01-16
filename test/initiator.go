@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/BoruTamena/go_chat/initiator"
+	"github.com/BoruTamena/go_chat/internal/constant/models/persistencedb"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +26,11 @@ func InitiateTest(arg string) TestInstance {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Llongfile)
 
+	err, cfg := initiator.InitViper()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	test_server := gin.Default()
 
 	v1 := test_server.Group("v1")
@@ -36,8 +42,14 @@ func InitiateTest(arg string) TestInstance {
 	// listen if the websocket client comes in
 	go platform.WebSocket.Run(context.Background())
 
+	_, db := initiator.IntMgDb(*cfg)
+
+	p := persistencedb.NewMgPersistence(&db, logger, *cfg)
+
+	Stg := initiator.InitPersistence(p, *cfg)
+
 	logger.Println("///>>> module layer init...")
-	module := initiator.InitModule(logger, platform)
+	module := initiator.InitModule(Stg.Pchat, logger, platform)
 
 	logger.Println("///>>> handler layer init...")
 	handler := initiator.IntHandler(logger, module)

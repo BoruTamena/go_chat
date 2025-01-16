@@ -127,6 +127,16 @@ func (mn *manager) RemoveClient(ctx context.Context, client_id string) error {
 
 }
 
+func (mn *manager) IsClientActive(ctx context.Context, client_id string) error {
+
+	if _, ok := mn.clients[client_id]; !ok {
+
+		return errors.ClientErr.New("client is not active")
+	}
+
+	return nil
+}
+
 // this method meant to be
 // imported directly from the ws package
 func (mn *manager) AddHandler(chat_type string, handler platform.HandlerFunc) {
@@ -135,6 +145,13 @@ func (mn *manager) AddHandler(chat_type string, handler platform.HandlerFunc) {
 
 }
 
+// @Summary WebSocket Connection
+// @Description Connects to the WebSocket server
+// @Tags websocket
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} string "Connected"
+// @Router /ws [get]
 func (mn *manager) ServeWs(ctx *gin.Context) {
 
 	var message models.Message

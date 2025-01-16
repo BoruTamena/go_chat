@@ -13,8 +13,10 @@ RUN go mod download
 # copy the entire source tree
 COPY  . .
 
+# Generate Swagger docs (optional if `swag` is in dev dependencies)
+RUN go install github.com/swaggo/swag/cmd/swag@latest && swag init -g  initiator/initiator.go
 # Generate swagger docs
-RUN make swagger
+# RUN swag init -g  initiator/initiator.go
  
 RUN ls -R /app
 
