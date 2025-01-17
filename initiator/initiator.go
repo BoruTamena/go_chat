@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/BoruTamena/go_chat/internal/constant/models/persistencedb"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,15 +22,31 @@ func Init() {
 
 	rg := engine.Group("v1")
 
+	// init config
+
+	err, config := InitViper()
+
+	if err != nil {
+		log.Fatalf("Config::%v", err.Error())
+	}
+
 	// create logger
 	logger := log.New(os.Stdout, "", 0)
 
-	//
+	// init platform
 	platform := InitPlatFormLayer()
 
 	go platform.WebSocket.Run(context.Background())
 
-	modules := InitModule(logger, platform)
+	// db
+
+	_, client := IntMgDb(*config)
+
+	p_db := persistencedb.NewMgPersistence(&client, logger, *config)
+
+	persistence := InitPersistence(p_db, *config)
+
+	modules := InitModule(persistence.Pchat, logger, platform)
 
 	// init handler
 	handler := IntHandler(logger, modules)
@@ -39,7 +56,7 @@ func Init() {
 	// listining and serving
 
 	server := http.Server{
-		Addr:    "localhost:7000",
+		Addr:    "localhost:" + config.Server.Port,
 		Handler: engine,
 	}
 

@@ -13,4 +13,19 @@ paths:
       responses: {}
       tags:
       - message
+  /ws:
+    get:
+      consumes:
+      - application/json
+      description: Connects to the WebSocket server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Connected
+          schema:
+            type: string
+      summary: WebSocket Connection
+      tags:
+      - websocket
 swagger: "2.0"

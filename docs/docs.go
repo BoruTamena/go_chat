@@ -28,6 +28,29 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        },
+        "/ws": {
+            "get": {
+                "description": "Connects to the WebSocket server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "websocket"
+                ],
+                "summary": "WebSocket Connection",
+                "responses": {
+                    "200": {
+                        "description": "Connected",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     }
 }`

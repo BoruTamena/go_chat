@@ -90,7 +90,7 @@ func (p *privateChat) twoUsersAreOnline(tb *godog.Table) error {
 
 	for _, client_id := range users {
 
-		url := fmt.Sprintf("%s/v1/message?client_id=%s", wsURL, client_id)
+		url := fmt.Sprintf("%s/v1/ws?client_id=%s", wsURL, client_id)
 		conn, _, err := websocket.DefaultDialer.Dial(url, nil)
 		if err != nil {
 			return fmt.Errorf("failed to connect WebSocket for user %s: %v", client_id, err)

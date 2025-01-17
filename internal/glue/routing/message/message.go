@@ -16,7 +16,7 @@ func InitRoute(rg *gin.RouterGroup, mn platform.WsManager, mh handler.Message) {
 
 		{
 			Method:  http.MethodGet,
-			Path:    "/message",
+			Path:    "/ws",
 			Handler: mn.ServeWs,
 		},
 

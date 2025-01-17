@@ -93,7 +93,7 @@ func (gc *groupChat) allTheFollowingUsersAreActive(gm *godog.Table) error {
 
 	for _, client := range gc.groups {
 
-		url := fmt.Sprintf("%s/v1/message?client_id=%s", WsUrl, client.Id)
+		url := fmt.Sprintf("%s/v1/ws?client_id=%s", WsUrl, client.Id)
 		conn, _, err := websocket.DefaultDialer.Dial(url, nil)
 		if err != nil {
 			return fmt.Errorf("failed to connect WebSocket for user %s: %v", client.Id, err)
