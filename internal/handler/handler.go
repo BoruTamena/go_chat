@@ -9,8 +9,8 @@ import (
 // define your handlers interface here
 
 type User interface {
+	RegisterUser(ctx *gin.Context)
 }
-
 type Message interface {
 	GetMessage(ctx *gin.Context)
 	TextFriendMessage(ctx *gin.Context, message models.Message, client *platform.Client)

@@ -1,0 +1,16 @@
+version: "2"
+servers:
+- engine: postgresql
+  uri: "postgres://postgres:password@localhost:5430/go_chat?sslmode=disable"
+sql:
+  - engine: "postgresql"
+    queries: "../internal/constant/query/queries"
+    schema: "../internal/constant/query/schemas"
+    database:
+      managed: true
+    gen:
+      go:
+        package: "db"
+        out: "../internal/constant/models/db"
+        sql_package: "pgx/v4"
+  
