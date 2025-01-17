@@ -64,7 +64,7 @@ services:
     networks:
       - chat_network
     volumes:
-      - ./docs:/app/docs  # Fix the path
+      - ./docs:/app/docs  
     depends_on:
       - mongo_db
 
@@ -74,9 +74,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./docs:/usr/share/nginx/html/docs  # Fix the path
+      - ./docs:/usr/share/nginx/html/docs 
     environment:
-      API_URL: /docs/swagger.yaml  # Ensure correct API URL
+      API_URL: /docs/swagger.yaml 
     depends_on:
       - app
 
@@ -93,10 +93,29 @@ services:
     networks:
       - chat_network
 
+  p_sql:
+    container_name: psql_db
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    
+    ports:
+      - "5430:5432"
+    networks:
+      - chat_network
+
+    environment:
+        POSTGRES_PASSWORD: password
+    
 networks:
   chat_network:
     driver: bridge
+   
 
 volumes:
   mydata: 
     driver: local
+
+  postgres_data:
+     driver: local
