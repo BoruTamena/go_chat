@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -33,6 +34,8 @@ func NewUserHandler(lg *log.Logger, user_module module.User) handler.User {
 // @Router /user [post]
 
 func (u *user) RegisterUser(ctx *gin.Context) {
+
+	fmt.Printf("============= user registeration is called ===============")
 
 	var user dto.User
 
@@ -97,7 +100,7 @@ func (u *user) SignIn(ctx *gin.Context) {
 
 	// TODO create token and store it on
 
-	ctx.JSON(http.StatusOK, gin.H{
+	ctx.JSON(http.StatusCreated, gin.H{
 		"status": "success",
 		"data":   user,
 	})

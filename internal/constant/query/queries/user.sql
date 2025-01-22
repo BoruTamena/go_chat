@@ -10,6 +10,6 @@ insert into users(
 
 
 -- name: GetUserByEmail :one 
-select * from users where email=$1;
+select * from users where email=$1 ;
 
 

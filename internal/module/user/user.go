@@ -36,9 +36,9 @@ func (u *user) CreateUser(ctx context.Context, user dto.User) (dto.User, error) 
 
 	}
 
-	user_d, _ := u.stg.GetUserByEmail(ctx, user.Email)
+	user_d, err := u.stg.GetUserByEmail(ctx, user.Email)
 
-	if user_d.ID.String() != "" {
+	if err == nil {
 
 		err := errors.DublicateErr.New("user Exists").
 			WithProperty(errors.ErrorCode, 409)
@@ -48,6 +48,10 @@ func (u *user) CreateUser(ctx context.Context, user dto.User) (dto.User, error) 
 		return dto.User{}, err
 
 	}
+
+	// if user_d.ID.String() != "" {
+
+	// }
 
 	h_password, err := helper.HashPassword(user.Password)
 

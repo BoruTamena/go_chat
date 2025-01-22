@@ -49,7 +49,7 @@ func (u *userStorage) CreateUser(ctx context.Context, user dto.User) (db.User, e
 
 func (u *userStorage) GetUserByEmail(ctx context.Context, email string) (db.User, error) {
 
-	user, err := u.GetUserByEmail(ctx, email)
+	user, err := u.db.GetUserByEmail(ctx, email)
 
 	if err != nil {
 
@@ -60,6 +60,12 @@ func (u *userStorage) GetUserByEmail(ctx context.Context, email string) (db.User
 		return db.User{}, err
 	}
 
-	return user, nil
+	if user.ID.String() != "" {
+
+		return user, nil
+
+	}
+
+	return db.User{}, errors.DbReadErr.New("no user with email")
 
 }

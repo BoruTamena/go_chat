@@ -2,20 +2,19 @@ package initiator
 
 import (
 	"log"
-	"os"
 
 	"github.com/BoruTamena/go_chat/internal/constant/models/dto"
 	"github.com/spf13/viper"
 )
 
-func InitViper() (error, *dto.Config) {
+func InitViper(currentDir string) (error, *dto.Config) {
 
 	var cfg dto.Config
 
-	currentDir, err := os.Getwd() // Get the current working directory
-	if err != nil {
-		log.Fatal("Failed to get current directory:", err)
-	}
+	// currentDir, err := os.Getwd() // Get the current working directory
+	// if err != nil {
+	// 	log.Fatal("Failed to get current directory:", err)
+	// }
 	viper.AddConfigPath(currentDir + "/config")
 	// viper.AddConfigPath("config/")
 	viper.SetConfigName("config")
