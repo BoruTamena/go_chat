@@ -17,6 +17,11 @@ func InitRoute(rg *gin.RouterGroup, handler handler.User) {
 			Path:    "/signup",
 			Handler: handler.RegisterUser,
 		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/signin",
+			Handler: handler.SignIn,
+		},
 	}
 
 	routing.RegisterRoute(rg, route)

@@ -1,11 +1,13 @@
 package helper
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
-	// "github.com/BoruTamena/models"
+	"github.com/BoruTamena/go_chat/internal/constant/errors"
 	"github.com/BoruTamena/go_chat/internal/constant/models/dto"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -15,16 +17,39 @@ const (
 	refreshTokenExpireDuration = time.Hour * 24 * 7 // for 7days or 1 week
 )
 
+func UserMarshal(userClaim dto.User) (string, error) {
+	user, err := json.Marshal(userClaim)
+
+	if err != nil {
+
+		err = errors.MarshalErr.Wrap(err, "marshaling user claim err").
+			WithProperty(errors.ErrorCode, http.StatusUnauthorized)
+
+		fmt.Println(err.Error())
+		return "", err
+	}
+
+	return string(user), nil
+
+}
+
 func CreateToken(userClaim dto.User) (string, string, error) {
+
+	user_claim, err := UserMarshal(userClaim)
+
+	if err != nil {
+		return "", "", err
+	}
+
 	// Creating access token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": userClaim, // Change "UserId" to "userId" for consistency
+		"user": user_claim,
 		"exp":  time.Now().Add(accessTokenExpireDuration).Unix(),
 	})
 
 	// Creating refresh token
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": userClaim,
+		"user": user_claim,
 		"exp":  time.Now().Add(refreshTokenExpireDuration).Unix(),
 	})
 
@@ -43,39 +68,60 @@ func CreateToken(userClaim dto.User) (string, string, error) {
 }
 
 func GenerateToken(user dto.User) (string, error) {
+
+	_user, err := UserMarshal(user)
+
+	if err != nil {
+		return "", err
+	}
+
 	claims := jwt.MapClaims{
-		"user": user,
+		"user": _user,
 		"exp":  time.Now().Add(accessTokenExpireDuration).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(os.Getenv("SCERATEKEY")))
 }
 
-// func RefreshAccessToken(refreshToken string) (string, error) {
-// 	// Parse refresh token
-// 	token, err := parseToken(refreshToken)
-// 	if err != nil {
-// 		return "", err
-// 	}
+func RefreshAccessToken(refreshToken string) (string, error) {
 
-// 	// Extract user ID from refresh token
-// 	claims, ok := token.Claims.(jwt.MapClaims)
-// 	if !ok {
-// 		return "", fmt.Errorf("invalid refresh token claims")
-// 	}
-// 	userID, ok := claims["userId"].(float64)
-// 	if !ok {
-// 		return "", fmt.Errorf("invalid user ID in refresh token")
-// 	}
+	var user dto.User
+	// Parse refresh token
+	token, err := parseToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
 
-// 	// Generate new access token
-// 	newAccessToken, err := GenerateToken(int(userID))
-// 	if err != nil {
-// 		return "", err
-// 	}
+	// Extract user ID from refresh token
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", fmt.Errorf("invalid refresh token claims")
+	}
+	user_claim, ok := claims["user"].(string)
 
-// 	return newAccessToken, nil
-// }
+	if !ok {
+		return "", fmt.Errorf("invalid user in refresh token")
+	}
+
+	if err := json.Unmarshal([]byte(user_claim), &user); err != nil {
+
+		err = errors.UnMarshalErr.Wrap(err, "unmarshalling user claim").
+			WithProperty(errors.ErrorCode, 500)
+
+		fmt.Println(err.Error())
+
+		return "", err
+
+	}
+
+	// Generate new access token
+	newAccessToken, err := GenerateToken(user)
+	if err != nil {
+		return "", err
+	}
+
+	return newAccessToken, nil
+}
 
 func ParseAccessToken(accessToken string) (*jwt.Token, error) {
 	return parseToken(accessToken)

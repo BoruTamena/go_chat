@@ -10,6 +10,7 @@ import (
 
 type User interface {
 	RegisterUser(ctx *gin.Context)
+	SignIn(ctx *gin.Context)
 }
 type Message interface {
 	GetMessage(ctx *gin.Context)

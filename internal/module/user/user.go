@@ -49,10 +49,6 @@ func (u *user) CreateUser(ctx context.Context, user dto.User) (dto.User, error) 
 
 	}
 
-	// if user_d.ID.String() != "" {
-
-	// }
-
 	h_password, err := helper.HashPassword(user.Password)
 
 	if err != nil {
@@ -106,13 +102,15 @@ func (u *user) LogIn(ctx context.Context, user dto.UserLogin) (dto.User, error) 
 	}
 
 	if !helper.VerifyPassword(user.Password, user_d.Password) {
-		err = errors.AuthErr.New("invalid email or password").
+		err = errors.AuthErr.New("invalid password").
 			WithProperty(errors.ErrorCode, 401)
 
 		log.Println("login err::", err)
 		return dto.User{}, err
 
 	}
+
+	// creating token
 
 	return dto.User{
 		Id:       user_d.ID.String(),

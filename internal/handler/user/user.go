@@ -1,13 +1,13 @@
 package user
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/BoruTamena/go_chat/internal/constant/errors"
 	"github.com/BoruTamena/go_chat/internal/constant/models/dto"
 	"github.com/BoruTamena/go_chat/internal/handler"
+	"github.com/BoruTamena/go_chat/internal/helper"
 	"github.com/BoruTamena/go_chat/internal/module"
 	"github.com/gin-gonic/gin"
 )
@@ -34,8 +34,6 @@ func NewUserHandler(lg *log.Logger, user_module module.User) handler.User {
 // @Router /user [post]
 
 func (u *user) RegisterUser(ctx *gin.Context) {
-
-	fmt.Printf("============= user registeration is called ===============")
 
 	var user dto.User
 
@@ -98,11 +96,20 @@ func (u *user) SignIn(ctx *gin.Context) {
 
 	}
 
-	// TODO create token and store it on
+	access_token, refresh_token, err := helper.CreateToken(user)
+
+	if err != nil {
+
+		ctx.Error(err)
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status": "success",
-		"data":   user,
+		"data": map[string]string{
+			"access_token":  access_token,
+			"refresh_token": refresh_token,
+		},
 	})
 
 }

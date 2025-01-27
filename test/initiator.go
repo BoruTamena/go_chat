@@ -8,6 +8,7 @@ import (
 	"github.com/BoruTamena/go_chat/initiator"
 	"github.com/BoruTamena/go_chat/internal/constant/models/persistencedb"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // your test initiator goes here
@@ -16,6 +17,7 @@ type TestInstance struct {
 	// Server ,Cache
 	// Module Handler
 	// PlatformLayer
+	ConPool  *pgxpool.Pool
 	Db       *persistencedb.MgPersistence
 	Sv       *gin.Engine
 	Handler  initiator.Handler
@@ -66,6 +68,7 @@ func InitiateTest(arg string) TestInstance {
 	logger.Println("///>>>  initilazation completed ")
 
 	return TestInstance{
+		ConPool:  con_pool,
 		Db:       &p,
 		Sv:       test_server,
 		Handler:  handler,
