@@ -24,7 +24,7 @@ func Init() {
 
 	// init config
 
-	err, config := InitViper()
+	err, config := InitViper("../")
 
 	if err != nil {
 		log.Fatalf("Config::%v", err.Error())
@@ -42,11 +42,15 @@ func Init() {
 
 	_, client := IntMgDb(*config)
 
-	p_db := persistencedb.NewMgPersistence(&client, logger, *config)
+	con_pool := InitPgDb(*config)
+
+	m := InitMigiration(config.Migration.Path, config.Db.PgUrl)
+	UpMigiration(m)
+	p_db := persistencedb.NewMgPersistence(con_pool, &client, logger, *config)
 
 	persistence := InitPersistence(p_db, *config)
 
-	modules := InitModule(persistence.Pchat, logger, platform)
+	modules := InitModule(persistence, logger, platform)
 
 	// init handler
 	handler := IntHandler(logger, modules)

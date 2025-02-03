@@ -8,6 +8,7 @@ import (
 	"github.com/BoruTamena/go_chat/initiator"
 	"github.com/BoruTamena/go_chat/internal/constant/models/persistencedb"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // your test initiator goes here
@@ -16,6 +17,8 @@ type TestInstance struct {
 	// Server ,Cache
 	// Module Handler
 	// PlatformLayer
+	ConPool  *pgxpool.Pool
+	Db       *persistencedb.MgPersistence
 	Sv       *gin.Engine
 	Handler  initiator.Handler
 	Moudle   initiator.Module
@@ -26,7 +29,7 @@ func InitiateTest(arg string) TestInstance {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Llongfile)
 
-	err, cfg := initiator.InitViper()
+	err, cfg := initiator.InitViper(arg)
 
 	if err != nil {
 		log.Fatal(err)
@@ -44,12 +47,17 @@ func InitiateTest(arg string) TestInstance {
 
 	_, db := initiator.IntMgDb(*cfg)
 
-	p := persistencedb.NewMgPersistence(&db, logger, *cfg)
+	con_pool := initiator.InitPgDb(*cfg)
+	m := initiator.InitMigiration(arg+cfg.Migration.Path, cfg.Db.PgUrl)
+
+	initiator.UpMigiration(m)
+
+	p := persistencedb.NewMgPersistence(con_pool, &db, logger, *cfg)
 
 	Stg := initiator.InitPersistence(p, *cfg)
 
 	logger.Println("///>>> module layer init...")
-	module := initiator.InitModule(Stg.Pchat, logger, platform)
+	module := initiator.InitModule(Stg, logger, platform)
 
 	logger.Println("///>>> handler layer init...")
 	handler := initiator.IntHandler(logger, module)
@@ -60,6 +68,8 @@ func InitiateTest(arg string) TestInstance {
 	logger.Println("///>>>  initilazation completed ")
 
 	return TestInstance{
+		ConPool:  con_pool,
+		Db:       &p,
 		Sv:       test_server,
 		Handler:  handler,
 		Moudle:   module,

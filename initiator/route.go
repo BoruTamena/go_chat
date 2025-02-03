@@ -3,6 +3,7 @@ package initiator
 import (
 	"github.com/BoruTamena/go_chat/docs"
 	"github.com/BoruTamena/go_chat/internal/glue/routing/message"
+	"github.com/BoruTamena/go_chat/internal/glue/routing/user"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,7 +23,7 @@ func InitRouter(
 
 	// initalizing route
 	message.InitRoute(&groupRouter, platform.WebSocket, handler.MessageHandler)
-
 	message.InitSocketRoute(platform.WebSocket, handler.MessageHandler)
 
+	user.InitRoute(&groupRouter, handler.UserHandler)
 }

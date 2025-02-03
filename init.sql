@@ -1,0 +1,4 @@
+
+CREATE DATABASE go_chat;
+CREATE USER  chat_user;
+GRANT ALL PRIVILEGES ON DATABASE go_chat TO chat_user;
