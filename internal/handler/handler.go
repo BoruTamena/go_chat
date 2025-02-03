@@ -17,3 +17,10 @@ type Message interface {
 	TextFriendMessage(ctx *gin.Context, message models.Message, client *platform.Client)
 	TextGroupMessage(ctx *gin.Context, message models.Message, _ *platform.Client)
 }
+
+type FriendShip interface {
+	GetFriends(ctx *gin.Context)
+	GetFriendByUserName(ctx *gin.Context)
+	AcceptFriendRequest(ctx *gin.Context)
+	BlockFriend(ctx *gin.Context)
+}

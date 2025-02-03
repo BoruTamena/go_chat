@@ -10,6 +10,114 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/accept": {
+            "put": {
+                "description": "accept request to stay connected with them regulary",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "friend"
+                ],
+                "summary": "Accept friend request",
+                "parameters": [
+                    {
+                        "description": "friend update object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FriendUpdate"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/block": {
+            "put": {
+                "description": "block friend",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "friend"
+                ],
+                "summary": "Block friend request",
+                "parameters": [
+                    {
+                        "description": "friend update object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FriendUpdate"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/friend": {
+            "get": {
+                "description": "get friends",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "friend"
+                ],
+                "summary": "getting friends all friendlists",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/friend/{user_name}": {
+            "get": {
+                "description": "sending friend request to get connected with people",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "friend"
+                ],
+                "summary": "sending friend request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "friend user name ",
+                        "name": "user_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/seemessage": {
             "get": {
                 "produces": [
@@ -41,6 +149,19 @@
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.FriendUpdate": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
                 }
             }
         }

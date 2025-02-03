@@ -1,3 +1,11 @@
+definitions:
+  dto.FriendUpdate:
+    properties:
+      status:
+        type: string
+      user_name:
+        type: string
+    type: object
 info:
   contact:
     name: Boru Tamene Yadeta
@@ -6,6 +14,79 @@ info:
   title: Go Chat
   version: 1.0.0
 paths:
+  /accept:
+    put:
+      consumes:
+      - application/json
+      description: accept request to stay connected with them regulary
+      parameters:
+      - description: friend update object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FriendUpdate'
+      produces:
+      - application/json
+      responses: {}
+      summary: Accept friend request
+      tags:
+      - friend
+  /block:
+    put:
+      consumes:
+      - application/json
+      description: block friend
+      parameters:
+      - description: friend update object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FriendUpdate'
+      produces:
+      - application/json
+      responses: {}
+      summary: Block friend request
+      tags:
+      - friend
+  /friend:
+    get:
+      description: get friends
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: getting friends all friendlists
+      tags:
+      - friend
+  /friend/{user_name}:
+    get:
+      consumes:
+      - application/json
+      description: sending friend request to get connected with people
+      parameters:
+      - description: 'friend user name '
+        in: path
+        name: user_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: sending friend request
+      tags:
+      - friend
   /seemessage:
     get:
       produces:

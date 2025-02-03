@@ -5,6 +5,7 @@ import (
 	"github.com/BoruTamena/go_chat/internal/constant/models/persistencedb"
 	"github.com/BoruTamena/go_chat/internal/storage"
 	"github.com/BoruTamena/go_chat/internal/storage/persistence/chat"
+	"github.com/BoruTamena/go_chat/internal/storage/persistence/friendship"
 	"github.com/BoruTamena/go_chat/internal/storage/persistence/user"
 )
 
@@ -13,11 +14,14 @@ type Persistence struct {
 	Pchat storage.Chat
 
 	User storage.User
+
+	FriendShip storage.Friendship
 }
 
 func InitPersistence(db persistencedb.MgPersistence, cfg dto.Config) Persistence {
 	return Persistence{
-		Pchat: chat.InitChat(db, cfg),
-		User:  user.NewUserStorage(db, cfg),
+		Pchat:      chat.InitChat(db, cfg),
+		User:       user.NewUserStorage(db, cfg),
+		FriendShip: friendship.NewFriendShipStorage(cfg, db),
 	}
 }

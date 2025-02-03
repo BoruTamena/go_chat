@@ -2,6 +2,7 @@ package initiator
 
 import (
 	"github.com/BoruTamena/go_chat/docs"
+	"github.com/BoruTamena/go_chat/internal/glue/routing/friendship"
 	"github.com/BoruTamena/go_chat/internal/glue/routing/message"
 	"github.com/BoruTamena/go_chat/internal/glue/routing/user"
 	"github.com/gin-gonic/gin"
@@ -21,9 +22,14 @@ func InitRouter(
 	docs.SwaggerInfo.BasePath = "/v1"
 	groupRouter.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	user.InitRoute(&groupRouter, handler.UserHandler)
+
 	// initalizing route
 	message.InitRoute(&groupRouter, platform.WebSocket, handler.MessageHandler)
 	message.InitSocketRoute(platform.WebSocket, handler.MessageHandler)
 
-	user.InitRoute(&groupRouter, handler.UserHandler)
+	// initalizing friendship route
+
+	friendship.InitFriendShip(&groupRouter, handler.FriendShipHandler)
+
 }
