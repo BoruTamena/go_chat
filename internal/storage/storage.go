@@ -18,3 +18,9 @@ type Chat interface {
 	InsertChat(ctx context.Context, chat dto.Chat) error
 	InsertGroupChat(ctx context.Context, gchat dto.GroupChat) error
 }
+
+type Friendship interface {
+	GetFriendByUserName(ctx context.Context, username string) (dto.User, error)
+	AddFriend(ctx context.Context, user_id, friend_id string) error
+	UpdateFriendStatus(ctx context.Context, user_id, friend_id, status string) error
+}

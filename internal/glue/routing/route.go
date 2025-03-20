@@ -15,9 +15,10 @@ type Router struct {
 		Permission
 
 	*/
-	Method  string
-	Path    string
-	Handler gin.HandlerFunc
+	Method      string
+	Path        string
+	Handler     gin.HandlerFunc
+	Middlewares []gin.HandlerFunc
 }
 
 type SocketRouter struct {
@@ -30,7 +31,12 @@ func RegisterRoute(rgroup *gin.RouterGroup, routes []Router) {
 
 	for _, route := range routes {
 
-		rgroup.Handle(route.Method, route.Path, route.Handler)
+		var handler []gin.HandlerFunc
+
+		handler = append(handler, route.Middlewares...)
+		handler = append(handler, route.Handler)
+
+		rgroup.Handle(route.Method, route.Path, handler...)
 
 	}
 

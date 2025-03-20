@@ -17,3 +17,9 @@ type Message interface {
 
 	MessageGroup(ctx context.Context, message models.Message) error
 }
+
+type Friendship interface {
+	// GetFriendByUserName(ctx context.Context, user_name string) (dto.User, error)
+	AddFriend(ctx context.Context, friend_user_name string) error
+	AcceptOrBlockFriend(ctx context.Context, friend_user_name, status string) error
+}

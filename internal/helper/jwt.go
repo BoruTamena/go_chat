@@ -43,14 +43,14 @@ func CreateToken(userClaim dto.User) (string, string, error) {
 
 	// Creating access token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": user_claim,
-		"exp":  time.Now().Add(accessTokenExpireDuration).Unix(),
+		"sub": user_claim,
+		"exp": time.Now().Add(accessTokenExpireDuration).Unix(),
 	})
 
 	// Creating refresh token
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": user_claim,
-		"exp":  time.Now().Add(refreshTokenExpireDuration).Unix(),
+		"sub": user_claim,
+		"exp": time.Now().Add(refreshTokenExpireDuration).Unix(),
 	})
 
 	// Signing tokens
@@ -76,8 +76,8 @@ func GenerateToken(user dto.User) (string, error) {
 	}
 
 	claims := jwt.MapClaims{
-		"user": _user,
-		"exp":  time.Now().Add(accessTokenExpireDuration).Unix(),
+		"sub": _user,
+		"exp": time.Now().Add(accessTokenExpireDuration).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(os.Getenv("SCERATEKEY")))
@@ -97,7 +97,7 @@ func RefreshAccessToken(refreshToken string) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("invalid refresh token claims")
 	}
-	user_claim, ok := claims["user"].(string)
+	user_claim, ok := claims["sub"].(string)
 
 	if !ok {
 		return "", fmt.Errorf("invalid user in refresh token")
